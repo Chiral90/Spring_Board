@@ -74,4 +74,10 @@ public class BoardServiceImpl implements BoardService {
 	}
 	*/
 	
+	// 목록과 전체 데이터 개수는 항상 같이 동작하는 경우가 많으므로 Criteria를 파라미터로 지정
+	public int totalCnt(Criteria cri) {
+		log.info("totalCnt : " + cri);
+		return mapper.totalCnt(cri);
+	}
+	
 }

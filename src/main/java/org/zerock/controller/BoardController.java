@@ -27,9 +27,15 @@ public class BoardController {
 	@GetMapping("/list") // url지정, list()에 리턴이 없으므로 list.jsp로 이동 board 폴더 없이 views에 모든 jsp 있으면 return "/list"
 	public void list(Criteria cri, Model model) { // 순서 상관있는지? // model은 .jsp로 데이터 전송
 		log.info("list : " + cri);
-		//
+		
 		model.addAttribute("list", service.getList(cri));
-		model.addAttribute("pageMaker", new PageDTO(cri, 100)); // total은 임의의 전체 데이터 수 - 나중에 db에서 연산할 듯
+		
+		int total = service.totalCnt(cri);
+		
+		log.info("total : " + total);
+		
+		//model.addAttribute("pageMaker", new PageDTO(cri, 100)); // total은 임의의 전체 데이터 수 - 나중에 db에서 연산할 듯
+		model.addAttribute("pageMaker", new PageDTO(cri, total));
 	}
 	
 	//list는 나중에 게시물의 목록을 전달해야 하므로 Model을 파라미터로 지정하고 BoardServiceImpl 객체의 getList() 결과를 addAttribute로 담아 전달
@@ -73,11 +79,19 @@ public class BoardController {
 			rttr.addFlashAttribute("result", "success");
 		}
 		
+		//UriComponentsBuilder 클래스를 사용하면서 필요 없어지는 부분
+		/*
 		//원래 페이지로 이동하기 위한 pageNum, amount
 		rttr.addAttribute("pageNum", cri.getPageNum());
 		rttr.addAttribute("amount", cri.getAmount());
+		//수정 및 삭제는 redirect 방식이므로 type과 keyword조건을 리다이렉트 시 포함시켜야한다
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 		
 		return "redirect:/board/list";
+		*/
+		
+		return "redirect:/board/list" + cri.getListLink();
 	}
 	
 	/*
@@ -98,9 +112,16 @@ public class BoardController {
 		if (service.delete(no)) {
 			rttr.addFlashAttribute("result", "success");
 		}
+		//UriComponentsBuilder 클래스를 사용하면서 필요 없어지는 부분
+		/*
 		rttr.addAttribute("pageNum", cri.getPageNum());
 		rttr.addAttribute("amount", cri.getAmount());
+		//수정 및 삭제는 redirect 방식이므로 type과 keyword조건을 리다이렉트 시 포함시켜야한다
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 		return "redirect:/board/list";
+		*/
+		return "redirect:/board/list" + cri.getListLink();
 	}
 	/*
 	@PostMapping("/delete")

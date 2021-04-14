@@ -54,6 +54,59 @@
                                 </c:forEach>
                                 </table>
                                 
+                                <!-- 검색 조건과 키워드가 들어 갈 수 있게 HTML을 수정 -->
+                                <%-- 
+                                <div class='row'>
+                                	<div class="col-lg-12">
+                                		<form id='searchForm' action="/board/list" method='get'>
+                                			<select name='type'>
+                                				<option value="">--------</option>
+                                				<option value="T">제목</option>
+                                				<option value="C">내용</option>
+                                				<option value="W">작성자</option>
+                                				<option value="TC">제목 or 내용</option>
+                                				<option value="TW">제목 or 작성자</option>
+                                				<option value="CW">내용 or 작성자</option>
+                                			</select>
+                                			<input type="text" name="keyword">
+                                			<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+                                			<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+                                			<button class="btn btn-default">Search</button>
+                                		</form>
+                                	</div>
+                                </div>
+                                 --%>
+                                <!-- 검색 후 검색 조건과 키워드를 보여주는 코드 -->
+                                <div class='row'>
+                                	<div class="col-lg-12">
+                                		<form id='searchForm' action="/board/list" method='get'>
+                                			<select name='type'>
+                                				<option value=""
+                                				<c:out value="${pageMaker.cri.type == null?'selected':'' }" />>------</option>
+	                                			<option value="T"
+	                                				<c:out value="${pageMaker.cri.type eq 'T'?'selected':'' }" />>제목</option>
+	                                			<option value="C"
+	                                				<c:out value="${pageMaker.cri.type eq 'C'?'selected':'' }" />>내용</option>
+	                                			<option value="W"
+	                                				<c:out value="${pageMaker.cri.type eq 'W'?'selected':'' }" />>작성자</option>	
+	                                			<option value="TC"
+	                                				<c:out value="${pageMaker.cri.type eq 'TC'?'selected':'' }" />>제목 or 내용</option>
+	                                			<option value="TW"
+	                                				<c:out value="${pageMaker.cri.type eq 'TW'?'selected':'' }" />>제목 or 작성자</option>
+	                                			<option value="CW"
+	                                				<c:out value="${pageMaker.cri.type eq 'CW'?'selected':'' }" />>내용 or 작성자</option>
+	                                			<option value="TCW"
+	                                				<c:out value="${pageMaker.cri.type eq 'TCW'?'selected':'' }" />>제목 or 내용 or 작성자</option>
+                                			</select>
+                                			<input type="text" name="keyword" value="${pageMaker.cri.keyword }">
+                                			<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+                                			<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+                                			<button class="btn btn-default">Search</button>
+                                		</form>
+                                	</div>
+                                </div>
+                                
+                                
                                 <!-- JSP에서 페이지 번호 출력 -->
                                 <!-- Q) href 속성값을 c:out으로 쓰면? -->
                                 <!-- line 65 : pageNum이 현재 페이지 번호와 같으면 class="paginate_button active" 아마 하이라이트? -->
@@ -78,6 +131,10 @@
                                 
                                 <!-- 페이지를 클릭하면 실제로 동작을 하는 부분, js로 버튼과 아래 인풋 연결 -->
                                 <form id="actionForm" action="/board/list" method="get">
+                                	<!-- 페이지 이동 시에도 동일한 검색 사항들을 유지 -->
+                                	<input type="hidden" name="type" value="<c:out value='${pageMaker.cri.type }' />">
+                                	<input type="hidden" name="keyword" value="<c:out value='${pageMaker.cri.keyword }' />">
+                                	
                                 	<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
                                 	<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
                                 </form>
@@ -166,7 +223,25 @@
             		actionForm.submit();
             		})
           
-            	
-            })
+            	//검색 버튼을 클릭하면 검색결과는 1페이지부터
+            	//화면에 select, input에 검색 조건과 키워드가 보이도록
+            	var searchForm = $("#searchForm");
+            	$("#searchForm button").on("click", function(e) {
+            		if (!searchForm.find("option:selected").val()) {
+            			alert("검색 종류를 선택하세요");
+            			return false;
+            		}
+            		if (!searchForm.find("input[name='keyword']").val()) {
+            			alert("키워드를 입력하세요");
+            			return false;
+            		}
+            		
+            		searchForm.find("input[name='pageNum']").val("1");
+            		e.preventDefault();
+            		
+            		searchForm.submit();
+            	});
+            	}
+            )
             </script>
 <%@ include file="../includes/footer.jsp" %>

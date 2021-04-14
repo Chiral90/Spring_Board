@@ -23,6 +23,10 @@
                         		<!-- pageNum, amount를 받아오기 위해 추가 -->
                         		<input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum }" />'>
                         		<input type='hidden' name='amount' value='<c:out value="${cri.amount }" />'>
+                        		<!-- 검색 조건 받아오기 -->
+                        		<input type='hidden' name='type' value='<c:out value="${cri.type }" />'>
+                        		<input type='hidden' name='keyword' value='<c:out value="${cri.keyword }" />'>
+                        		
                         		<!-- 글 번호 -->
                         		<c:forEach items="${board }" var="board">
                         		<div class="form-group">
@@ -82,14 +86,27 @@
                 	
                 	if (operation === 'delete') {
                 		formObj.attr("action", "/board/delete");
-                	} else if (operation === 'list') {
+                	} else if (operation === 'list') { // List버튼을 클릭하면
                 		//move to list
                 		//self.location = "/board/list" //
                 		//form을 통한 이동
                 		//list 버튼을 클릭할 경우 action속성과 method 속성을 변경
                 		formObj.attr("action", "/board/list").attr("method", "get");
                 		//"/board/list"로의 이동은 아무런 파라미터가 없기 때문에 form의 모든 내용은 삭제하고 submit()을 진행
-                		formObj.empty();
+                		
+                		// form 태그에서 필요한 부분만 잠시 복사해서 보관하고
+                		var pageNumTag = $("input[name='pageNum']").clone();
+                		var amountTag = $("input[name='amount']").clone();
+                		// update.jsp에서 list.jsp로 이동하는 경우 필요한 파라미터만 전송하기 위해 form 태그의 모든 내용을 지우고 다시 추가하는 방식을 이용했으므로 type, keyword를 별도로 저장
+                		var type = $("input[name='type']").clone();
+                		var keyword = $("input[name='keyword']").clone();
+                		
+                		formObj.empty(); // form 태그 내의 모든 내용은 지운다
+                		formObj.append(pageNumTag);
+                		formObj.append(amountTag);
+                		//
+                		formObj.append(type);
+                		formObj.append(keyword);
                 		//이후에 코드가 실행되지 않도록 return을 통해서 제어 ??? return 어디?
                 	}
                 	formObj.submit();

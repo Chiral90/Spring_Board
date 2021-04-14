@@ -1,6 +1,7 @@
 package org.zerock.mapper;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,7 +76,7 @@ public class BoardMapperTests {
 		log.info("update count : " + bno);
 	}
 	
-	@Test
+	//@Test
 	public void testPaging() {
 		Criteria cri = new Criteria();
 		//10개씩 3페이지 테스트
@@ -85,6 +86,25 @@ public class BoardMapperTests {
 		System.out.println(map);
 		//List<BoardVO> list = mapper.getListWithPaging(cri);
 		//list.forEach(board -> log.info(board));
+	}
+	
+	@Test
+	public void testSearch() { // Criteria객체의 type과 keyword를 넣어서 원하는 sql이 생성되는지 확인하는 메서드. 실행 시 만들어지는 sql확인 필수
+		
+		Criteria cri = new Criteria();
+		cri.setKeyword("service");
+		cri.setType("TC");
+		
+		List<BoardVO> list = mapper.getListWithPaging(cri);
+		list.forEach(board -> log.info(board));
+	}
+	
+	//@Test
+	public void testTotal() {
+		Criteria cri = new Criteria();
+		cri.setKeyword("service");
+		cri.setType("TC");
+		System.out.println("total count : " + mapper.totalCnt(cri));
 	}
 
 }

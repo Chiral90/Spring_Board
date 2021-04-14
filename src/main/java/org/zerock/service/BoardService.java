@@ -24,5 +24,8 @@ public interface BoardService {
 	//페이징 적용 시 getList가 Criteria를 인수로 받아와야 함
 	//public List<BoardVO> getList();
 	public List<BoardVO> getList(Criteria cri);
+	
+	//total count
+	public int totalCnt(Criteria cri);
 
 }
